@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS recommended_meals (
 
 CREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY KEY,
-    name VARCHAR(20) NOT NULL,
+    name VARCHAR(50) NOT NULL,
     gender VARCHAR(20) NOT NULL,
     fitness_goal VARCHAR(30) NOT NULL,
     email TEXT NOT NULL UNIQUE,
@@ -51,7 +51,8 @@ CREATE TABLE IF NOT EXISTS user_health_statistics (
     steps INTEGER,
     calories_burned INTEGER,
     average_heart_rate DECIMAL(5,2),
-    PRIMARY KEY (user_id, date_recorded)
+    PRIMARY KEY (user_id, date_recorded),
+    FOREIGN KEY (user_id) REFERENCES users (id)
 );
 
 CREATE TABLE IF NOT EXISTS user_meals (
