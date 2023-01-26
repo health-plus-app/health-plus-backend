@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS recommended_meals (
     meal_id UUID PRIMARY KEY,
     price BIGINT,
     FOREIGN KEY (meal_id) REFERENCES meals (id),
-    CHECK (price > 0)
+    CHECK (price >= 0)
 );
 
 CREATE TABLE IF NOT EXISTS users (
