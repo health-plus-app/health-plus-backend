@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS ingredients (
 
 CREATE TABLE IF NOT EXISTS meals (
     id UUID PRIMARY KEY,
+    name VARCHAR(50),
     calories INTEGER,
     meal_type VARCHAR(15)
     CHECK (meal_type IN ('breakfast', 'lunch', 'dinner', 'snack')),
