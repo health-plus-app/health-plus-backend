@@ -70,7 +70,6 @@ insert into rates (user_id, rec_meal_id, individual_rating) values ('55b157a0-1f
 insert into rates (user_id, rec_meal_id, individual_rating) values ('43225c08-3f73-4835-9b0f-e978c4c98286', 'ff8dd98d-273f-4a64-a802-d80808aa7f7b', 8);
 insert into rates (user_id, rec_meal_id, individual_rating) values ('166ed317-3ca8-4534-9f1f-cb208a3d5dc5', '6683c09a-816c-40ea-ac5c-406be5beaa40', 4);
 insert into rates (user_id, rec_meal_id, individual_rating) values ('2d30b2cf-fc5a-451b-9202-a9611a0640cf', '6530b427-dfe0-4694-9c3d-81cc9813421f', 7);
-insert into rates (user_id, rec_meal_id, individual_rating) values ('f5ec57b3-cc2b-427d-a1f8-b5bc20fc877b', 'e1133a42-f79f-4c33-ae71-24943a9e4374', 10);
 insert into rates (user_id, rec_meal_id, individual_rating) values ('35479999-b4fc-4d88-bf17-8cbaf827e9d2', '653684ca-5e5f-4ad0-8bb2-2c3b4bd97775', 2);
 insert into rates (user_id, rec_meal_id, individual_rating) values ('cee0e6b2-dcc3-459b-9fa7-01f3ce24e374', '49469c27-fa47-4ba9-bfe3-1077ceaa342f', 3);
 insert into rates (user_id, rec_meal_id, individual_rating) values ('3bae05c2-3085-405d-a85c-04ca57b6920a', '3d544851-7bdb-408e-bfd3-93e8850173e9', 6);
@@ -329,8 +328,6 @@ insert into rates (user_id, rec_meal_id, individual_rating) values ('1c1cf022-65
 insert into rates (user_id, rec_meal_id, individual_rating) values ('10d90c5e-9d89-4b2b-86a2-1d3fbabd9469', '934b4234-14bb-456c-8115-d71e1e5a0dde', 5);
 insert into rates (user_id, rec_meal_id, individual_rating) values ('a483ccc2-73b3-4a06-b278-867c9add4385', '4e6ab68e-50db-4780-95ad-c7ecbf2487a7', 6);
 insert into rates (user_id, rec_meal_id, individual_rating) values ('081fd665-027c-4178-936a-81e3275d6990', '7ef3af8e-6e52-49ea-bd82-57082495246d', 7);
-insert into rates (user_id, rec_meal_id, individual_rating) values ('158a3e5c-9f5e-4f4d-a4c6-3838a1802d76', 'e1133a42-f79f-4c33-ae71-24943a9e4374', 6);
-insert into rates (user_id, rec_meal_id, individual_rating) values ('bdba7a97-c4e5-4746-afcb-73e466a20ee4', '004e1736-3d4e-45a6-9725-eef4d93b9e31', 9);
 insert into rates (user_id, rec_meal_id, individual_rating) values ('8b73e2a8-50d2-4210-82ac-3eb3f5f38e2c', '17122475-9fcb-4111-adc1-b8c133215273', 4);
 insert into rates (user_id, rec_meal_id, individual_rating) values ('c9a1722e-4e99-4893-bc7a-bc38c5effd1d', '0dc1f0cf-b67e-4f42-a10f-ad3a7af25ed1', 10);
 insert into rates (user_id, rec_meal_id, individual_rating) values ('c9188a59-e664-4028-bcf9-de1b3124e08b', '860852ad-89f7-4211-af96-89e69654b7ed', 9);
@@ -424,9 +421,7 @@ insert into rates (user_id, rec_meal_id, individual_rating) values ('0ef8e0ad-d7
 insert into rates (user_id, rec_meal_id, individual_rating) values ('b8ab3ae6-43fc-4be1-a436-04c570fd36ae', 'aa1355a3-0672-4ee4-9d3e-def4f31d68e4', 2);
 insert into rates (user_id, rec_meal_id, individual_rating) values ('a8f16339-c5da-4422-aa35-d3aba4f4138e', 'a2eeabfd-f0a4-45df-aeb4-14e148f455f6', 3);
 insert into rates (user_id, rec_meal_id, individual_rating) values ('eabbd790-0870-424e-974c-a35dd10fcf3c', 'f3f91662-09af-4e06-a9da-9d34089fcf8a', 5);
-insert into rates (user_id, rec_meal_id, individual_rating) values ('31a4ae8a-ec7e-47c1-a8d6-902b13fa6ac7', 'e1133a42-f79f-4c33-ae71-24943a9e4374', 5);
 insert into rates (user_id, rec_meal_id, individual_rating) values ('b9bad4dd-b264-4eee-98b8-3ab592bf2333', '5cb756dc-3d9c-4262-8ec1-06aec87b1150', 2);
-insert into rates (user_id, rec_meal_id, individual_rating) values ('9df7d3b9-8f1f-4d48-8d88-512b1a51fd91', '27d62987-ba0b-4e2d-a1b6-9adfce21b820', 1);
 insert into rates (user_id, rec_meal_id, individual_rating) values ('a9cea7ce-59e6-422e-8259-5c9901aacdc1', '9ee9813d-c10f-4c87-b1b3-f3c1e3869c3d', 6);
 insert into rates (user_id, rec_meal_id, individual_rating) values ('866e9e39-9aaa-4294-afd7-be6444584914', '353465e2-f0b7-4496-a505-ed8a661ff6ac', 6);
 insert into rates (user_id, rec_meal_id, individual_rating) values ('3d594862-2ace-47c3-a3eb-d62138a306b7', '2e1c1fe5-c061-4b2a-976f-5dd551b97911', 5);
