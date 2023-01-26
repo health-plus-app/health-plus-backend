@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS eats (
     user_id UUID,
     meal_id UUID,
     time_recorded TIMESTAMPTZ NOT NULL,
-    PRIMARY KEY (user_id, meal_id),
+    PRIMARY KEY (user_id, meal_id, time_recorded),
     FOREIGN KEY (user_id) REFERENCES users (id),
     FOREIGN KEY (meal_id) REFERENCES meals (id)
 );
