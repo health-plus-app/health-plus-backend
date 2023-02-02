@@ -1,5 +1,6 @@
 var express = require('express')
 var app = express()
+const userRouter = require('./routes/user.router')
 
 // CRUD = CREATE READ UPDATE DELETE
 // HTTP GET = READ
@@ -22,5 +23,7 @@ var app = express()
 app.get('/', function (req, res) {
   res.send('Hello from Health+')
 })
+
+app.use('/users', userRouter);
 
 app.listen(3000)
