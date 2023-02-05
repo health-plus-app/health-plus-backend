@@ -1,4 +1,5 @@
 const express = require('express');
+const bcrypt = require('bcryptjs');
 
 const Pool = require('pg').Pool
 const pool = new Pool({
@@ -11,6 +12,35 @@ const pool = new Pool({
 
 const router = express.Router();
 
+// Login
+router.get('/login', async(req,res) => {
+    const {email, password} = req.body
+    pool.query('select * from users where email=$1', [email], (error, results) => {
+        if (error) {
+            throw error
+        }
+        if (results.length == 0) {
+            res.status(401).json({
+                message: "Login not successful",
+                error: "User not found",
+            })
+        }
+        else {
+            bcrypt.compare(password, results.rows[0].password).then(function(result) {
+                result ?
+                res.status(200).json({
+                    message: "Login successful",
+                    results
+                })
+                : res.status(401).json({
+                    message: "Login not successful",
+                })
+
+            })
+        }
+    })
+})
+
 // Get user by id
 router.get('/:id', async (req,res) => {
     const { id } = req.params;
@@ -18,7 +48,12 @@ router.get('/:id', async (req,res) => {
         if (error) {
             throw error
         }
-
+        if (results.length == 0){
+            res.status(401).json({
+                message: "Could not find user",
+                error: "User not found",
+            })
+        }
         res.status(200).json(results.rows)
     })
 })
@@ -36,10 +71,12 @@ function generateUUID() {
 // Register a user
 router.post('/register', async(req, res) => {
     console.log(req.body);
-    const {username, password} = req.body
+    const {email, password} = req.body
     let myuuid = generateUUID();
 
-    pool.query('insert into users (id, email, password) values($1,$2,$3)', [myuuid, username, password], (error, results) => {
+    const hash = bcrypt.hash(password, 10);
+
+    pool.query('insert into users (id, email, password) values($1,$2,$3)', [myuuid, email, hash], (error, results) => {
         if (error) {
             throw error
         }
@@ -49,4 +86,6 @@ router.post('/register', async(req, res) => {
         })
     })
 })
+
+
 module.exports = router;

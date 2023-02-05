@@ -10,7 +10,7 @@ const pool = new Pool({
 
 const router = express.Router();
 
-// Get user by id
+// Get meal by id
 router.get('/:id', async (req,res) => {
     const { id } = req.params;
     pool.query('SELECT * FROM meals where id = $1', [id], (error, results) => {
