@@ -8,8 +8,8 @@ from bs4 import BeautifulSoup
 from collections import defaultdict, deque
 from string import punctuation
 
-stop_words = set(stopwords.words("english"))
-tokenizer = WhitespaceTokenizer()
+# stop_words = set(stopwords.words("english"))
+# tokenizer = WhitespaceTokenizer()
 # from simhash import Simhash, SimhashIndex
 
 frontier = deque()
@@ -30,6 +30,18 @@ processed = set()
 #         simhash_data.uniqueID += 1
 #         return False
 #     return True
+
+def build_processed():
+    # Will parse the recipes.json file previously created and add all the URLs to the set
+    try:
+        with open("recipes.json", "r") as file:
+            for line in file:
+                url = json.loads(line).get("url")
+                if url:
+                    print(url)
+                    processed.add(url)
+    except Exception:
+        pass # In case recipes.json() hasn't been made yet
 
 def get_tokens(text) -> [str]:
     # Grabs text and removes stopwords, punctuation, etc.
@@ -55,7 +67,7 @@ def get_nutrition_table(soup) -> dict:
 
 def get_nutrition_script(soup) -> dict:
     # Grabs ingredients from application/ld+json
-    keys = ["name", "recipeIngredient"]
+    keys = ["name", "recipeIngredient", "recipeInstructions"]
     to_return = {}
     try:
         contents = soup.find("script", {"type":"application/ld+json"}).contents[0].strip()
@@ -93,6 +105,8 @@ def extract_next_links(soup):
     return to_return
 
 def run():
+    counter = 0
+    build_processed()
     while (frontier):
         url_to_search = frontier.pop()
         time.sleep(1) # Politeness delay
@@ -104,6 +118,10 @@ def run():
         food_info['url'] = url_to_search
         for k, v in food_info.items():
             print(f"{k}: {v}")
+        if food_info.get("name") and food_info.get("recipeIngredient"):
+            # Means not an article page, append food info to a file
+            with open("recipes.json", "a") as file:
+                file.write(json.dumps(food_info))
         processed.add(url_to_search)
         # Get next links from the HTML
         pots = extract_next_links(soup)
