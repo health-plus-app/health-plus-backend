@@ -58,25 +58,14 @@ router.get('/:id', async (req,res) => {
     })
 })
 
-function generateUUID() {
-    var dt = new Date().getTime();
-    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-        var r = (dt + Math.random()*16)%16 | 0;
-        dt = Math.floor(dt/16);
-        return (c=='x' ? r :(r&0x3|0x8)).toString(16);
-    });
-    return uuid;
-}
-
 // Register a user
 router.post('/register', async(req, res) => {
     console.log(req.body);
-    const {email, password} = req.body
-    let myuuid = generateUUID();
+    const {id, email, password} = req.body
 
     const hash = bcrypt.hash(password, 10);
 
-    pool.query('insert into users (id, email, password) values($1,$2,$3)', [myuuid, email, hash], (error, results) => {
+    pool.query('insert into users (id, email, password) values($1,$2,$3)', [id, email, hash], (error, results) => {
         if (error) {
             throw error
         }
