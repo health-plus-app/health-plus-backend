@@ -31,10 +31,14 @@ CREATE TABLE IF NOT EXISTS recommended_meals (
 CREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
-    gender VARCHAR(20) NOT NULL,
-    fitness_goal VARCHAR(30) NOT NULL,
     email TEXT NOT NULL UNIQUE,
     password VARCHAR(30) NOT NULL,
+);
+
+CREATE TABLE IF NOT EXISTS user_profile {
+    user_profile_id UUID PRIMARY KEY,
+    gender VARCHAR(20) NOT NULL,
+    fitness_goal VARCHAR(30) NOT NULL,
     weight INTEGER NOT NULL,
     height INTEGER NOT NULL,
     CHECK (weight > 0),
@@ -43,7 +47,7 @@ CREATE TABLE IF NOT EXISTS users (
     CHECK (height < 100),
     CHECK (gender IN ('male', 'female', 'nonbinary')),
     CHECK (fitness_goal IN ('lose', 'gain', 'maintain'))
-);
+}
 
 CREATE TABLE IF NOT EXISTS user_health_statistics (
     user_id UUID,
