@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS users (
     password VARCHAR(30) NOT NULL,
 );
 
-CREATE TABLE IF NOT EXISTS user_profile {
+CREATE TABLE IF NOT EXISTS user_profiles {
     user_profile_id UUID PRIMARY KEY,
     gender VARCHAR(20) NOT NULL,
     fitness_goal VARCHAR(30) NOT NULL,

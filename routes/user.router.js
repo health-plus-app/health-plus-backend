@@ -41,23 +41,6 @@ router.get('/login', async(req,res) => {
     })
 })
 
-// Get user by id
-router.get('/:id', async (req,res) => {
-    const { id } = req.params;
-    pool.query('SELECT * FROM users where id = $1', [id], (error, results) => {
-        if (error) {
-            throw error
-        }
-        if (results.length == 0){
-            res.status(401).json({
-                message: "Could not find user",
-                error: "User not found",
-            })
-        }
-        res.status(200).json(results.rows)
-    })
-})
-
 // Register a user
 router.post('/register', async(req, res) => {
     console.log(req.body);
@@ -75,6 +58,58 @@ router.post('/register', async(req, res) => {
         })
     })
 })
+
+// Get User Profile
+router.get('/info/:id', async(req,res) => {
+    const { id } = req.params;
+    pool.query('SELECT * FROM user_profiles where id = $1', [id], (error, results) => {
+        if (error) {
+            throw error
+        }
+        if (results.length == 0){
+            res.status(401).json({
+                message: "Could not find user profile",
+                error: "User profile not found",
+            })
+        }
+        res.status(200).json(results.rows)
+    })
+})
+
+// Get User Health Statistics
+router.get('/health/:id', async(req,res) => {
+    const { id, data } = req.params;
+    pool.query('SELECT * FROM user_health_statistics where id = $1 and date_recorded = $2', [id, data], (error, results) => {
+        if (error) {
+            throw error
+        }
+        if (results.length == 0){
+            res.status(401).json({
+                message: "Could not find user profile",
+                error: "User profile not found",
+            })
+        }
+        res.status(200).json(results.rows)
+    })
+})
+
+// Get user by id
+router.get('/:id', async (req,res) => {
+    const { id } = req.params;
+    pool.query('SELECT * FROM users where id = $1', [id], (error, results) => {
+        if (error) {
+            throw error
+        }
+        if (results.length == 0){
+            res.status(401).json({
+                message: "Could not find user",
+                error: "User not found",
+            })
+        }
+        res.status(200).json(results.rows)
+    })
+})
+
 
 
 module.exports = router;

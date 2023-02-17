@@ -10,10 +10,24 @@ const pool = new Pool({
 
 const router = express.Router();
 
+
+
 // Get ingredient by id
 router.get('/:id', async (req,res) => {
     const { id } = req.params;
     pool.query('SELECT * FROM ingredients where id = $1', [id], (error, results) => {
+        if (error) {
+            throw error
+        }
+
+        res.status(200).json(results.rows)
+    })
+})
+
+// Add ingredient to meal
+router.post('/add', async(req, res) => {
+    const {mealId, ingredientId, quantity} = req.body
+    pool.query('INSERT INTO contains (meal_id, ingredient_id, quantity) values ($1, $2, $3)', [mealId, ingredientId, quantity], (error, results) => {
         if (error) {
             throw error
         }
