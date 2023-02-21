@@ -7,7 +7,17 @@ CREATE TABLE IF NOT EXISTS meals (
     id UUID PRIMARY KEY,
     meal_name VARCHAR(50),
     calories INTEGER,
-    meal_type VARCHAR(15)
+    total_fat INTEGER,
+    saturated_fat INTEGER,
+    carbohydrates INTEGER,
+    cholesterol INTEGER,
+    sodium INTEGER,
+    fiber INTEGER,
+    protein INTEGER,
+    recipe_url varchar(300),
+    image_url varchar(300),
+    meal_description varchar(500),
+    meal_type VARCHAR(15),
     CHECK (meal_type IN ('breakfast', 'lunch', 'dinner', 'snack')),
     CHECK (calories >= 0)
 );
