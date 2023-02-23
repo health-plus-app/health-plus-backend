@@ -6,15 +6,17 @@ const pool = new Pool({
   user: 'postgres',
   host: 'localhost',
   database: 'db',
-  password: 'password',
+  password: '8939W24thst',
   port: 5432,
 })
 
 const router = express.Router();
 
 // Login
-router.get('/login', async(req,res) => {
+router.post('/login', async(req,res) => {
+    console.log(req.body)
     const {email, password} = req.body
+    const hashedPassword = await bcrypt.hash(password, 10)
     pool.query('select * from users where email=$1', [email], (error, results) => {
         if (error) {
             throw error
@@ -26,7 +28,7 @@ router.get('/login', async(req,res) => {
             })
         }
         else {
-            bcrypt.compare(password, results.rows[0].password).then(function(result) {
+            bcrypt.compare(password, hashedPassword).then(function(result) {
                 result ?
                 res.status(200).json({
                     message: "Login successful",
