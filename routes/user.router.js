@@ -78,6 +78,24 @@ router.get('/info/:id', async(req,res) => {
     })
 })
 
+// Get User Profile
+router.post('/info/:id', async(req,res) => {
+    const { id } = req.params;
+    const { goal, weight, allergies} = req.body;
+    pool.query('insert into user_profiles (id, goal, weight, allergies) values($1,$2,ARRAY $3)', [id, goal, weight, allergies], (error, results) => {
+        if (error) {
+            throw error
+        }
+        if (results.length == 0){
+            res.status(401).json({
+                message: "Could not create profile",
+                error: "User profile not created",
+            })
+        }
+        res.status(200).json(results.rows)
+    })
+})
+
 // Get User Health Statistics
 router.get('/health/:id', async(req,res) => {
     const { id, data } = req.params;
