@@ -77,6 +77,7 @@ router.get('/info/:id', async(req,res) => {
     })
 })
 
+
 // Post User Profile
 router.post('/info', async(req,res) => {
     const { id,  goal, weight, allergies} = req.body;
