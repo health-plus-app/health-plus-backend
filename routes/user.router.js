@@ -16,7 +16,6 @@ const router = express.Router();
 router.post('/login', async(req,res) => {
     console.log(req.body)
     const {email, password} = req.body
-    const hashedPassword = await bcrypt.hash(password, 10)
     pool.query('select * from users where email=$1', [email], (error, results) => {
         if (error) {
             throw error
@@ -28,7 +27,7 @@ router.post('/login', async(req,res) => {
             })
         }
         else {
-            bcrypt.compare(password, hashedPassword).then(function(result) {
+            bcrypt.compare(password, results.rows[0].password).then(function(result) {
                 result ?
                 res.status(200).json({
                     message: "Login successful",
@@ -48,9 +47,9 @@ router.post('/register', async(req, res) => {
     console.log(req.body);
     const {id, email, password} = req.body
 
-    const hash = bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10)
 
-    pool.query('insert into users (id, email, password) values($1,$2,$3)', [id, email, hash], (error, results) => {
+    pool.query('insert into users (id, email, password) values($1,$2,$3)', [id, email, hashedPassword], (error, results) => {
         if (error) {
             throw error
         }
@@ -78,11 +77,11 @@ router.get('/info/:id', async(req,res) => {
     })
 })
 
-// Get User Profile
-router.post('/info/:id', async(req,res) => {
-    const { id } = req.params;
-    const { goal, weight, allergies} = req.body;
-    pool.query('insert into user_profiles (id, goal, weight, allergies) values($1,$2,ARRAY $3)', [id, goal, weight, allergies], (error, results) => {
+
+// Post User Profile
+router.post('/info', async(req,res) => {
+    const { id,  goal, weight, allergies} = req.body;
+    pool.query('insert into user_profiles (user_id, fitness_goal, weight, allergies) values($1,$2,$3, $4)', [id, goal, weight, allergies], (error, results) => {
         if (error) {
             throw error
         }
