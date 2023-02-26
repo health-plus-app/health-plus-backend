@@ -3,23 +3,23 @@ CREATE TABLE IF NOT EXISTS ingredients (
     ingredient VARCHAR(40) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS meals (
+CREATE TABLE IF NOT EXISTS meals(
     id UUID PRIMARY KEY,
-    meal_name VARCHAR(50),
+    meal_name VARCHAR(100),
     calories INTEGER,
-    total_fat INTEGER,
-    saturated_fat INTEGER,
-    carbohydrates INTEGER,
-    cholesterol INTEGER,
-    sodium INTEGER,
-    fiber INTEGER,
-    protein INTEGER,
+    total_fat INTEGER, -- in grams
+    saturated_fat INTEGER, -- in grams
+    carbohydrates INTEGER, -- in grams
+    cholesterol INTEGER, -- in grams
+    sodium INTEGER, -- in miligrams
+    fiber INTEGER, -- in grams
+    protein INTEGER, -- in grams
     recipe_url varchar(300),
     image_url varchar(300),
-    meal_description varchar(500),
-    meal_type VARCHAR(15),
-    CHECK (meal_type IN ('breakfast', 'lunch', 'dinner', 'snack')),
-    CHECK (calories >= 0)
+    meal_description varchar(800),
+    recipe_instructions TEXT[],
+    recipe_ingedients TEXT[],
+    servings INTEGER
 );
 
 CREATE TABLE IF NOT EXISTS contains (
@@ -42,21 +42,17 @@ CREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
     email TEXT NOT NULL UNIQUE,
-    password VARCHAR(30) NOT NULL,
+    password VARCHAR(30) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS user_profiles {
+CREATE TABLE IF NOT EXISTS user_profiles (
     user_profile_id UUID PRIMARY KEY,
     gender VARCHAR(20) NOT NULL,
     fitness_goal VARCHAR(30) NOT NULL,
     age INTEGER NOT NULL,
-    CHECK (weight > 0),
-    CHECK (weight < 1200),
-    CHECK (0 < height),
-    CHECK (height < 100),
     CHECK (gender IN ('male', 'female', 'nonbinary')),
     CHECK (fitness_goal IN ('lose', 'gain', 'maintain'))
-}
+);
 
 CREATE TABLE IF NOT EXISTS user_health_statistics (
     user_id UUID,
