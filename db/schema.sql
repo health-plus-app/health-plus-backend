@@ -1,3 +1,8 @@
+DROP TABLE likes;
+DROP TABLE user_profiles;
+DROP TABLE meals;
+DROP TABLE users;
+
 CREATE TABLE IF NOT EXISTS meals(
     id UUID PRIMARY KEY,
     meal_name VARCHAR(100),
@@ -19,15 +24,15 @@ CREATE TABLE IF NOT EXISTS meals(
 
 CREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY KEY,
-    name VARCHAR(50) NOT NULL,
     email TEXT NOT NULL UNIQUE,
-    password VARCHAR(30) NOT NULL
+    password VARCHAR(70) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS user_profiles (
     user_id UUID,
     fitness_goal VARCHAR(30) NOT NULL,
     weight INTEGER NOT NULL,
+    allergies varchar[],
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
 
@@ -37,5 +42,5 @@ CREATE TABLE IF NOT EXISTS likes (
     likes BOOLEAN NOT NULL,
     PRIMARY KEY (user_id, rec_meal_id),
     FOREIGN KEY (user_id) REFERENCES users (id),
-    FOREIGN KEY (rec_meal_id) REFERENCES meals (id),
+    FOREIGN KEY (rec_meal_id) REFERENCES meals (id)
 );
