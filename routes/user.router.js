@@ -6,7 +6,7 @@ const pool = new Pool({
   user: 'postgres',
   host: 'localhost',
   database: 'db',
-  password: 'password',
+  password: '8939W24thst',
   port: 5432,
 })
 
@@ -63,7 +63,26 @@ router.post('/register', async(req, res) => {
 // Get User Profile
 router.get('/info/:id', async(req,res) => {
     const { id } = req.params;
-    pool.query('SELECT * FROM user_profiles where id = $1', [id], (error, results) => {
+    pool.query('SELECT * FROM user_profiles where user_id = $1', [id], (error, results) => {
+        if (error) {
+            throw error
+        }
+        if (results.length == 0){
+            res.status(401).json({
+                message: "Could not find user profile",
+                error: "User profile not found",
+            })
+        }
+        res.status(200).json(results.rows)
+    })
+})
+
+// Update User Profile
+router.put('/info/:id', async(req,res) => {
+    console.log(req.body)
+    const {id} = req.params;
+    const { goal, weight, allergies } = req.body;
+    pool.query('update user_profiles set fitness_goal = $1, weight=$2, allergies=$3 where user_id = $4', [goal, weight, allergies, id], (error, results) => {
         if (error) {
             throw error
         }
