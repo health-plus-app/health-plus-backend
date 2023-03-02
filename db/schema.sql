@@ -6,6 +6,7 @@ DROP TABLE users;
 CREATE TABLE IF NOT EXISTS meals(
     id UUID PRIMARY KEY,
     meal_name VARCHAR(100),
+    meal_type VARCHAR(50), --breakfast/lunch/dinner
     calories INTEGER,
     total_fat INTEGER, -- in grams
     saturated_fat INTEGER, -- in grams
