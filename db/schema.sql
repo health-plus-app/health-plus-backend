@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 CREATE TABLE IF NOT EXISTS user_profiles (
-    user_id UUID,
+    user_id UUID UNIQUE,
     fitness_goal VARCHAR(30) NOT NULL,
     weight INTEGER NOT NULL,
     allergies varchar[],
