@@ -35,15 +35,6 @@ router.post('/', async(req, res) => {
     })
 })
 
-// post rating
-router.post('/ratings', async(req, res) => {
-    const rating = req.body
-    pool.query('INSERT INTO rates (user_id, rec_meal_id, individual_rating) values ($1, $2, $3)', [userId, recMealId, individualRating], (error, results) => {
-        if (error) {
-            throw error
-        }
-        res.status(200).json(results.rows)
-    })
-})
+
 
 module.exports = router;
