@@ -20,7 +20,7 @@ router.post('/login', async(req,res) => {
         if (error) {
             throw error
         }
-        if (results.length == 0) {
+        if (results.rowCount == 0) {
             res.status(401).json({
                 message: "Login not successful",
                 error: "User not found",
@@ -67,7 +67,7 @@ router.get('/info/:id', async(req,res) => {
         if (error) {
             throw error
         }
-        if (results.length == 0){
+        if (results.rowCount == 0){
             res.status(401).json({
                 message: "Could not find user profile",
                 error: "User profile not found",
@@ -86,7 +86,7 @@ router.put('/info/:id', async(req,res) => {
         if (error) {
             throw error
         }
-        if (results.length == 0){
+        if (results.rowCount == 0){
             res.status(401).json({
                 message: "Could not find user profile",
                 error: "User profile not found",
@@ -104,7 +104,7 @@ router.post('/info', async(req,res) => {
         if (error) {
             throw error
         }
-        if (results.length == 0){
+        if (results.rowCount == 0){
             res.status(401).json({
                 message: "Could not create profile",
                 error: "User profile not created",
@@ -121,7 +121,7 @@ router.get('/health/:id', async(req,res) => {
         if (error) {
             throw error
         }
-        if (results.length == 0){
+        if (results.rowCount == 0){
             res.status(401).json({
                 message: "Could not find user profile",
                 error: "User profile not found",
@@ -138,7 +138,7 @@ router.get('/:id', async (req,res) => {
         if (error) {
             throw error
         }
-        if (results.length == 0){
+        if (results.rowCount == 0){
             res.status(401).json({
                 message: "Could not find user",
                 error: "User not found",
