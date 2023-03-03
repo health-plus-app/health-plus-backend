@@ -15,7 +15,7 @@ const router = express.Router();
 
 // Login
 router.post('/login', async (req,res) => {
-    const {email, password} = req.body;
+    const { email, password } = req.body;
     const results = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
     
     if (results.rowCount === 0) {
