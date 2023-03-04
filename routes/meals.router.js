@@ -20,13 +20,17 @@ router.get('/:id', async (req,res) => {
 
 router.post('/', async(req, res) => {
     var subqueries = new Array()
-    subqueries.push(`m.meal_name like '%%${req.body.meal_name}%%'`) 
+    subqueries.push(`LOWER(m.meal_name) like '%${req.body.meal_name}%'`) 
+    var offset = req.body.offset * 10
     var clause = "";
     clause = subqueries.join(" and ")
-    var query = `Select * from meals as m where ${clause} limit 10`
+    var query = `Select * from meals as m where ${clause} order by m.meal_name ASC limit 10 offset ${offset}`
+    var queryCount = `Select count(*) from meals as m where ${clause}`
     console.log(query)
     const results = await pool.query(query)
-    res.status(200).json(results.rows);
+    const count = await pool.query(queryCount)
+
+    res.status(200).json({meals: results.rows, count: count.rows[0].count});
 })
 
 
