@@ -13,9 +13,9 @@ const router = express.Router();
 // Get meal by id
 router.get('/:id', async (req,res) => {
     const { id } = req.params;
-    const results = pool.query('SELECT * FROM meals where id = $1', [id]);
+    const results = await pool.query('SELECT * FROM meals where id = $1', [id]);
 
-    res.status(200).json(results.rows);
+    res.status(200).json(results.rows[0]);
 })
 
 router.post('/', async(req, res) => {
