@@ -29,12 +29,12 @@ const user_email_exists = async email => {
 }
 
 // 2003-06-23
-const getAge = async dateString => {
+const getAge = dateString => {
     let today = new Date();
-    let year = Number(dateString.substr(0, 4))
-    let month = Number(dateString.substr(5, 7))
-    let day = Number(dateString. substr(8,10))
-//    var birthDate = new Date();
+    const date = dateString.split('-');
+    year = parseInt(date[0]);
+    month = parseInt(date[1]);
+    day = parseInt(date[2]);
     let age = today.getFullYear() - year;
     let m = today.getMonth() - month;
     if (m < 0 || (m === 0 && today.getDate() < day)) {
@@ -43,4 +43,4 @@ const getAge = async dateString => {
     return age;
 }
 
-module.exports = {user_exists, user_email_exists};
+module.exports = {user_exists, user_email_exists, getAge};
