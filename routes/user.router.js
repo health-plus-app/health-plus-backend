@@ -1,6 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const uuid = require('uuid');
+const jwt = require('jsonwebtoken');
 
 const Pool = require('pg').Pool
 const pool = new Pool({
@@ -12,6 +13,9 @@ const pool = new Pool({
 })
 
 const router = express.Router();
+
+const { user_exists, user_email_exists } = require('./user.helper.js');
+const { auth } = require('./auth.js');
 
 // Login
 router.post('/login', async (req,res) => {
@@ -25,8 +29,18 @@ router.post('/login', async (req,res) => {
         })
     } else {
         const password_matches = await bcrypt.compare(password, results.rows[0].password);
+
         if (password_matches) {
+            const payload = {
+                user: {
+                    id: results.rows[0].id
+                }
+            }
+            const token = await jwt.sign(payload, 'secret', {
+                expiresIn: 1000
+            });
             res.status(200).json({
+                token: token,
                 message: "Login successful",
             })    
         } else {
@@ -39,7 +53,15 @@ router.post('/login', async (req,res) => {
 
 // Register a user
 router.post('/register', async (req, res) => {
-    const { email, password } = req.body
+    const { email, password } = req.body;
+
+    if (await user_email_exists(email)) {
+        res.status(409).json({
+            message: "User could not be created",
+            error: "A user with the specified email already exists"
+        });
+        return;
+    }
 
     const hashedPassword = await bcrypt.hash(password, 10)
     const user_id = uuid.v4();
@@ -52,32 +74,22 @@ router.post('/register', async (req, res) => {
 })
 
 // Get User Profile
-router.get('/info/:id', async (req,res) => {
-    const { id } = req.params;
+router.get('/info', auth, async (req,res) => {
+    const { id }  = req.user;
 
     const results = await pool.query('SELECT * FROM user_profiles WHERE user_id = $1', [id]);
     if (results.rowCount === 0){
-        res.status(404).json({
+        return res.status(404).json({
             message: "User profile not found",
             error: "No user exists with specified user id"
-        })
+        });
     }
     res.status(200).json(results.rows);
 })
 
-// helper function to test if user exists
-const user_exists = async id => {
-    const res = await pool.query('SELECT * FROM users WHERE id = $1', [id]);
-    if (res.rowCount === 0) {
-        return false;
-    } else {
-        return true;
-    }
-}
-
 // Put User Profile
-router.put('/info/:id', async (req,res) => {
-    const { id } = req.params;
+router.put('/info', auth, async (req,res) => {
+    const { id }  = req.user;
     const { goal, weight, allergies } = req.body;
 
     if (!(await user_exists(id))) {
@@ -90,9 +102,9 @@ router.put('/info/:id', async (req,res) => {
 
     const results = (await pool.query('SELECT * FROM user_profiles WHERE user_id = $1', [id]));
     if (results.rowCount === 0) {
-        await pool.query('INSERT INTO user_profiles (user_id, fitness_goal, weight, allergies) VALUES($1,$2,$3,$4)', [id, goal, weight, allergies]);
-        res.status(200).json({
-            message: "User Profile successfully created",
+        return res.status(404).json({
+            message: "User profile doesn't exists",
+            error: "A user profile doesn't exist for the given id"
         });
     } else {
         await pool.query('UPDATE user_profiles SET fitness_goal = $1, weight = $2, allergies = $3 WHERE user_id = $4', [goal, weight, allergies, id]);
@@ -102,8 +114,26 @@ router.put('/info/:id', async (req,res) => {
     }
 })
 
+router.post('/info', auth, async (req,res) => {
+    const { id }  = req.user;
+    const { goal, weight, allergies } = req.body;
+    const results = (await pool.query('SELECT * FROM user_profiles WHERE user_id = $1', [id]));
+
+    if (results.rowCount === 0) {
+        await pool.query('INSERT INTO user_profiles (user_id, fitness_goal, weight, allergies) VALUES($1,$2,$3,$4)', [id, goal, weight, allergies]);
+        res.status(200).json({
+            message: "User Profile successfully created",
+        });
+    } else {
+        return res.status(404).json({
+            message: "User profile already exists",
+            error: "A user profile already exists with the given id"
+        });
+    }
+});
+
 // Get user by id
-router.get('/:id', async (req,res) => {
+router.get('/:id', auth, async (req,res) => {
     const { id } = req.params;
     const results = await pool.query('SELECT * FROM users WHERE id = $1', [id]);
 
