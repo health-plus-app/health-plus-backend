@@ -90,7 +90,7 @@ router.get('/info', auth, async (req,res) => {
 // Put User Profile
 router.put('/info', auth, async (req,res) => {
     const { id }  = req.user;
-    const { goal, weight, allergies } = req.body;
+    const { goal, weight, meals_per_day, allergies } = req.body;
 
     if (!(await user_exists(id))) {
         res.status(404).json({
@@ -107,7 +107,7 @@ router.put('/info', auth, async (req,res) => {
             error: "A user profile doesn't exist for the given id"
         });
     } else {
-        await pool.query('UPDATE user_profiles SET fitness_goal = $1, weight = $2, allergies = $3 WHERE user_id = $4', [goal, weight, allergies, id]);
+        await pool.query('UPDATE user_profiles SET fitness_goal = $1, weight = $2, allergies = $3, meals_per_day = $4 WHERE user_id = $5', [goal, weight, allergies, meals_per_day, id]);
         res.status(200).json({
             message: "User Profile successfully updated",
         });
@@ -116,11 +116,11 @@ router.put('/info', auth, async (req,res) => {
 
 router.post('/info', auth, async (req,res) => {
     const { id }  = req.user;
-    const { goal, weight, allergies } = req.body;
+    const { goal, weight, meals_per_day, allergies } = req.body;
     const results = (await pool.query('SELECT * FROM user_profiles WHERE user_id = $1', [id]));
 
     if (results.rowCount === 0) {
-        await pool.query('INSERT INTO user_profiles (user_id, fitness_goal, weight, allergies) VALUES($1,$2,$3,$4)', [id, goal, weight, allergies]);
+        await pool.query('INSERT INTO user_profiles (user_id, fitness_goal, weight, meals_per_day, allergies) VALUES($1,$2,$3,$4,$5)', [id, goal, weight, meals_per_day, allergies]);
         res.status(200).json({
             message: "User Profile successfully created",
         });

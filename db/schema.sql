@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS user_profiles (
     user_id UUID UNIQUE,
     fitness_goal VARCHAR(30) NOT NULL,
     weight INTEGER NOT NULL,
+    meals_per_day INTEGER NOT NULL,
     allergies varchar[],
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
