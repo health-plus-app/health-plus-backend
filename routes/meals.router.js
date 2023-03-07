@@ -10,6 +10,7 @@ const pool = new Pool({
 
 const router = express.Router();
 
+
 // Get meal by id
 router.get('/:id', async (req,res) => {
     const { id } = req.params;

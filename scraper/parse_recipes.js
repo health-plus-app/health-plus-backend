@@ -14,7 +14,7 @@ function replacer(match, offset, string) {
 function parse_recipes() {
     // Returns string for stuff to be inserted 
     let line;
-    let insert_string = 'INSERT INTO MEALS VALUES ';
+    let insert_string = '';
 
     while (line = recipeLines.next()) {
         try {
@@ -30,7 +30,8 @@ function parse_recipes() {
                 instructions += `"${res.instructions[i].replace(/'|"|(\\")/g, replacer)}", `;
             }
             instructions = instructions.substring(0, instructions.length - 2) + "}";
-
+            
+            insert_string += 'INSERT INTO MEALS (id, meal_name, calories, total_fat, saturated_fat, carbohydrates, cholesterol, sodium, fiber, protein, recipe_url, image_url, meal_description, recipe_instructions, recipe_ingredients, servings) VALUES '
             insert_string += '(';
             insert_string += `'${uuid.v4()}', `
             insert_string += `'${res.name.replace(/'|"|(\\")/g, replacer)}', `;
@@ -48,14 +49,14 @@ function parse_recipes() {
             insert_string += `'${instructions}', `
             insert_string += `'${ingredients}', `
             insert_string += parseInt(res.servings);
-            insert_string += '), ';
+            insert_string += ');\n';
         }
         catch (error) {
             console.log(error);
             continue;
         }
     }
-    insert_string = insert_string.substring(0, insert_string.length - 2) + ";";
+    // insert_string = insert_string.substring(0, insert_string.length - 2) + ";";
     return insert_string;
 }
 
