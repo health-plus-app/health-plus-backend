@@ -19,7 +19,6 @@ const auth = (req, res, next) => {
             message: "token is not valid",
         })   
     }
-
 }
 
 module.exports = { auth };

@@ -35,14 +35,12 @@ router.post('/', auth, async(req, res) => {
     res.status(200).json({meals: results.rows, count: count.rows[0].count});
 })
 
-
-
 // Get meal by calories
 router.post('/recommended', auth, async(req, res) => {
   const { id }  = req.user;
   const results = await pool.query('SELECT * FROM user_profiles WHERE user_id = $1', [id]);
   const { fitness_goal, meals_per_day } = results.rows[0];
-  const { weight, gender, height, dob, total_cal} = req.body;
+  const { weight, gender, height, dob, total_cal } = req.body;
   const age = getAge(dob);
   
   console.log({ weight, gender, height, dob, total_cal});
@@ -54,14 +52,14 @@ router.post('/recommended', auth, async(req, res) => {
     var dotproduct=0;
     var mA=0;
     var mB=0;
-    for(i = 0; i < A.length; i++){ // here you missed the i++
+    for(i = 0; i < A.length; i++){
         dotproduct += (A[i] * B[i]);
         mA += (A[i]*A[i]);
         mB += (B[i]*B[i]);
     }
     mA = Math.sqrt(mA);
     mB = Math.sqrt(mB);
-    var similarity = (dotproduct)/((mA)*(mB)) // here you needed extra brackets
+    var similarity = (dotproduct)/((mA)*(mB))
     return similarity;
   }
 
@@ -136,17 +134,7 @@ router.post('/recommended', auth, async(req, res) => {
     }
   });
 
-  const res_json = top_100_cos_sims.slice(0, 10).map(item => {
-    return ({
-      "image": item[1].image_url,
-      "name": item[1].meal_name,
-      "protein": item[1].protein, 
-      "carbs": item[1].carbohydrates, 
-      "fats": item[1].total_fat, 
-      "cals": item[1].calories, 
-      "description": item[1].meal_description
-    })
-  });
+  const res_json = top_100_cos_sims.slice(0, 10).map(item => item[1]);
 
   res.status(200).json(res_json);
 })
