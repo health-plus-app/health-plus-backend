@@ -6,7 +6,6 @@ DROP TABLE users;
 CREATE TABLE IF NOT EXISTS meals(
     id UUID PRIMARY KEY,
     meal_name VARCHAR(100),
-    meal_type VARCHAR(50), --breakfast/lunch/dinner
     calories INTEGER,
     total_fat INTEGER, -- in grams
     saturated_fat INTEGER, -- in grams
@@ -19,7 +18,7 @@ CREATE TABLE IF NOT EXISTS meals(
     image_url varchar(300),
     meal_description varchar(800),
     recipe_instructions TEXT[],
-    recipe_ingredients TEXT[],
+    recipe_ingredients TEXT[], 
     servings INTEGER
 );
 
@@ -33,6 +32,7 @@ CREATE TABLE IF NOT EXISTS user_profiles (
     user_id UUID UNIQUE,
     fitness_goal VARCHAR(30) NOT NULL,
     weight INTEGER NOT NULL,
+    meals_per_day INTEGER NOT NULL,
     allergies varchar[],
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
