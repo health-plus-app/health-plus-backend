@@ -11,6 +11,7 @@ const pool = new Pool({
 const router = express.Router();
 const { auth } = require('./auth.js');
 const { getAge } = require('./user.helper.js');
+const { allergyMapping } = require('./allergyMapping.js');
 
 // Get meal by id
 router.get('/:id', auth, async (req,res) => {
@@ -39,13 +40,19 @@ router.post('/', auth, async(req, res) => {
 router.post('/recommended', auth, async(req, res) => {
   const { id }  = req.user;
   const results = await pool.query('SELECT * FROM user_profiles WHERE user_id = $1', [id]);
-  const { fitness_goal, meals_per_day } = results.rows[0];
+  const { fitness_goal, meals_per_day, allergies } = results.rows[0];
   const { weight, gender, height, dob, total_cal } = req.body;
   const age = getAge(dob);
   
   console.log({ weight, gender, height, dob, total_cal});
   console.log(fitness_goal);
   console.log(meals_per_day);
+  const allergyIngredients = new Set();
+  for (const allergy of allergies) {
+    for (const ingredient of allergyMapping[allergy]) {
+      allergyIngredients.add(ingredient);
+    }
+  }
 
   // stole this from https://stackoverflow.com/a/57363600
   const cosineSim = (A,B) =>{
@@ -82,7 +89,9 @@ router.post('/recommended', auth, async(req, res) => {
     fats = calories * 0.30;
     carbs = calories * 0.40;
   }
-  else if (fitness_goal.toLowerCase() === "gain weight") {
+  else if (fitness_goal.toLowerCase() === "gain weight" ||
+  fitness_goal.toLowerCase() === "gain weight/muscle" // The option when making the profile
+  ) {
     calories += 500;
     protein = calories * 0.25;
     fats = calories * 0.25;
@@ -103,15 +112,31 @@ router.post('/recommended', auth, async(req, res) => {
   const response = await pool.query('SELECT * FROM meals');
   const ideal_meal_vector = [ideal_meal_calories, ideal_meal_protein, ideal_meal_carbs, ideal_meal_fats];
   let cos_sims = [];
+  const meal_names = new Set();
 
-  response.rows.map(meal => {
-    const meal_calories = meal.calories !== undefined ? meal.calories : 1;
-    const meal_protein = meal.protein !== undefined ? meal.protein : 1;
-    const meal_carbs = meal.carbohydrates !== undefined ? meal.carbohydrates : 1;
-    const meal_fats = meal.total_fat !== undefined ? meal.total_fat : 1;
+  for (const meal of response.rows) {
+    const meal_calories = meal?.calories || 1;
+    if (meal_names.has(meal.meal_name) || meal_calories <= 100) {
+      continue; // Skip sauces scraped from all recipes.
+    }
+    meal_names.add(meal.meal_name); // Skip duplicate recipes
+    let allergy = false;
+    for (const mealIngredient of meal.recipe_ingredients) {
+      for (const allergyIngredient of allergyIngredients) {
+        if (mealIngredient.toLowerCase().includes(allergyIngredient)) {
+          allergy = true;
+          break;
+        }
+      }
+    }
+    if (allergy) { continue; }
+    const meal_protein = meal?.protein || 1;
+    const meal_carbs = meal?.carbohydrates || 1;
+    const meal_fats = meal?.total_fat || 1;
     const meal_vector = [meal_calories, meal_protein, meal_carbs, meal_fats];
     cos_sims.push([cosineSim(ideal_meal_vector, meal_vector), meal, Math.abs(meal_calories - ideal_meal_calories), meal_vector, ideal_meal_vector])
-  })
+  }
+  
   cos_sims.sort((a, b) => {
     if (a[0] < b[0]) {
       return -1;
