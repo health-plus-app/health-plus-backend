@@ -36,12 +36,36 @@ router.post('/', auth, async(req, res) => {
     res.status(200).json({meals: results.rows, count: count.rows[0].count});
 })
 
+function calculateMacros(fitnessGoal, calories) {
+  let protein = 0, fats = 0, carbs = 0;
+  if (fitnessGoal === "lose weight") {
+    calories -= 500;
+    protein = calories * 0.30;
+    fats = calories * 0.30;
+    carbs = calories * 0.40;
+  }
+  else if (fitnessGoal === "gain weight" ||
+  fitnessGoal === "gain weight/muscle" // The option when making the profile
+  ) {
+    calories += 500;
+    protein = calories * 0.25;
+    fats = calories * 0.25;
+    carbs = calories * 0.50;
+  } else if (fitnessGoal === "maintain weight") {
+    protein = calories * 0.20;
+    fats = calories * 0.25;
+    carbs = calories * 0.55; 
+  }
+  else { console.log("Error in fitnessGoal", fitnessGoal); }
+  return {protein: protein, fats: fats, carbs: carbs}
+}
+
 // Get meal by calories
 router.post('/recommended', auth, async(req, res) => {
   const { id }  = req.user;
   const results = await pool.query('SELECT * FROM user_profiles WHERE user_id = $1', [id]);
-  const { fitness_goal, meals_per_day, allergies } = results.rows[0];
-  const { weight, gender, height, dob, total_cal } = req.body;
+  const { fitness_goal, meals_per_day, allergies, weight } = results.rows[0];
+  const { gender, height, dob, total_cal } = req.body;
   const age = getAge(dob);
   
   console.log({ weight, gender, height, dob, total_cal});
@@ -80,29 +104,15 @@ router.post('/recommended', auth, async(req, res) => {
 
   // TODO: Determine appropriate activity factor
 
-  let calories = bmr - total_cal;
-  let protein, carbs, fats;
+  let calories = bmr + total_cal;
+  console.log(`Calories user has for the day: ${calories}`);
 
-  if (fitness_goal.toLowerCase() === "lose weight") {
-    calories -= 500;
-    protein = calories * 0.30;
-    fats = calories * 0.30;
-    carbs = calories * 0.40;
-  }
-  else if (fitness_goal.toLowerCase() === "gain weight" ||
-  fitness_goal.toLowerCase() === "gain weight/muscle" // The option when making the profile
-  ) {
-    calories += 500;
-    protein = calories * 0.25;
-    fats = calories * 0.25;
-    carbs = calories * 0.50;
-  } else if (fitness_goal.toLowerCase() === "maintain weight") {
-    protein = calories * 0.20;
-    fats = calories * 0.25;
-    carbs = calories * 0.55; 
-  } else {
-    throw err("fitness goal is not valid");
-  }
+  const macros = calculateMacros(fitness_goal.toLowerCase(), calories);
+  const protein = macros.protein;
+  const carbs = macros.carbs;
+  const fats = macros.fats;
+  // For cardio, 3-1 ratio of carbs to protein
+  // For lifgint, 2-1 ratio of carbs to protein
 
   ideal_meal_calories = Math.round(calories/meals_per_day);
   ideal_meal_protein = Math.round((protein/meals_per_day)/4); // 4 calories = 1 gram of protein
