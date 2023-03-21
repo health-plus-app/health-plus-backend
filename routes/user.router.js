@@ -115,6 +115,7 @@ router.put('/info', auth, async (req,res) => {
 })
 
 router.post('/info', auth, async (req,res) => {
+    console.log("Creating user profile...");
     const { id }  = req.user;
     const { goal, weight, meals_per_day, allergies } = req.body;
     const results = (await pool.query('SELECT * FROM user_profiles WHERE user_id = $1', [id]));
